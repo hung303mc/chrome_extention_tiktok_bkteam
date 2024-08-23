@@ -914,6 +914,17 @@ chrome.runtime.onMessage.addListener(async (req, sender) => {
       break;
 
     case "addTrackingComplete":
+      // Lấy thông tin từ request
+      const { orderId, tracking } = req;
+
+      // Gửi thông tin order và tracking lên server trước khi điều hướng
+      const query = JSON.stringify({
+        orderId,
+        trackingCode: tracking,
+      });
+
+      const resAddTrack = await sendRequestToMB("addedTrackingCode", null, query);
+
       //  Manage Orders > To Ship page
       const url =
         "https://seller-us.tiktok.com/order/?selected_sort=1&tab=to_ship";

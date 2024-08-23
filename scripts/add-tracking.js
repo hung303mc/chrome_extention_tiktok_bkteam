@@ -68,9 +68,13 @@ $(document).on("click", AT_ITEM_SELECTOR, async function () {
   $(this).removeClass("loader");
   $(ADD_TRACKING_BTN).removeClass("loader");
 
+  // Gửi thông điệp đến background.js với thông tin orderId và tracking
   chrome.runtime.sendMessage({
     message: "addTrackingComplete",
+    orderId,
+    tracking
   });
+
 });
 
 $(document).on("click", ADD_TRACKING_BTN, async function () {
