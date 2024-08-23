@@ -11567,3 +11567,435 @@ https://seller-us.tiktok.com/api/v1/pay/statement/order/list
         "extend_limit": 0
     }
 }
+
+
+// Send to server createTiktokOrder
+{
+  "input": {
+    "orderID": "576705874278781545",
+    "buyer": {
+      "email": "jassoxtra0@gmail.com",
+      "name": "jassoxtra0"
+    },
+    "shipping": {
+      "name": "Jasmine Harrison",
+      "address1": "313 Forest Pine Rd Apt A",
+      "address2": "Forest Pine Road",
+      "city": "Franklin",
+      "state": "Virginia",
+      "zipCode": "23851",
+      "country": "United States",
+      "phone": "(+1)4346329741"
+    },
+    "shippingMethod": "Standard Shipping",
+    "shippingTotal": 0,
+    "items": [
+      {
+        "itemID": "576705875864490601",
+        "qty": 1,
+        "productID": "1729549536307221371",
+        "productVariantID": "1729549547715269499",
+        "sku": "DV5_17",
+        "title": "Bundle Inside Out Emotions Characters shirt, Today I Feel All The Feels shirt, T-Shirt Unisex Crewneck, Comfortable Top Casual Basic, Unisex Cotton Tee, Womenswear Menswear, Top Shirt, Gifts, Gifts for Her, Gifts for Him",
+        "image": "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/a70b1620a93e4982897efb7c4ea9498a~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=645250395",
+        "price": 6.69,
+        "shippingCost": 0,
+        "attributes": [
+          {
+            "name": "size",
+            "value": "S"
+          },
+          {
+            "name": "sku_name",
+            "value": "BLACK, S"
+          }
+        ]
+      }
+    ],
+    "orderCreated": "2024-08-21T09:19:50.000Z",
+    "subTotal": 18.12
+  }
+}
+
+// URL: https://seller-us.tiktok.com/api/v1/seller/common/get?locale=en&language=en&oec_seller_id=&aid=4068&app_name=i18n_ecom_shop&fp=verify_lxbj5zbx_0mQdByGL_W29d_4wbb_89re_TXxM0eAlgeUu&device_platform=web&cookie_enabled=true&screen_width=1366&screen_height=768&browser_language=en-US&browser_platform=Win32&browser_name=Mozilla&browser_version=5.0%20%28Windows%20NT%2010.0%3B%20Win64%3B%20x64%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F124.0.0.0%20Safari%2F537.36&browser_online=true&timezone_name=America%2FIndianapolis&need_verify_account=true&default_region=US&msToken=yBNgRId_Y_JPRb-GD-I-ZPTz8MaeXLy9GbcVPtWezV6DToovuPFNXV0dNl_l6EwV3fB2L9H4xGD_UxDTz1gbBDzN2KWDDG7-FG5S5SJNovGr-1xgD0q4vtVA6UIM7j0Tm4XN4A==&X-Bogus=DFSzswVYI9JANJhLt18O/AsZrJ7O&_signature=_02B4Z6wo00001ItrsRwAAIDAdAcvj9oeq7SLa7WAAEQhfa
+{
+    "code": 0,
+    "message": "success",
+    "data": {
+        "seller": {
+            "status": 2,
+            "seller_type": 2,
+            "business_type": 2,
+            "shop_name": "ConkasRogo",
+            "seller_id": "7495787289552915260",
+            "shop_code": "USLCT4EVL9",
+            "region_code": "US",
+            "logo": {
+                "height": 1024,
+                "width": 1024,
+                "url_list": [
+                    "https://p19-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/587383daaf8a4eaaa4dfb4c8f2b5944f~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=1345521523",
+                    "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/587383daaf8a4eaaa4dfb4c8f2b5944f~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=1345521523"
+                ]
+            },
+            "seller_condition": 5,
+            "activate_current_todo_step": 1,
+            "is_activate_todo_finish": false,
+            "timezone": {
+                "name": "America/Los_Angeles"
+            },
+            "global_shop_name": "ConkasRogo",
+            "shop_region": "US",
+            "test_flag": 0,
+            "shop_status": 2
+        },
+        "account_id": "7495787289552915260",
+        "phone_verified": true,
+        "email_verified": true,
+        "is_sub_account": false,
+        "verified_documents": 3,
+        "has_order": true,
+        "added_product": true,
+        "binded_bank_account": true,
+        "has_uncollected_money": true,
+        "conflict": false,
+        "global_seller": {
+            "global_seller_id": "7495787289552915260",
+            "seller_map": [
+                {
+                    "seller_id": "7495787289552915260",
+                    "region": "US",
+                    "region_name": "United States of America",
+                    "is_new": false,
+                    "shop_status": 2
+                }
+            ],
+            "status": 2,
+            "timezone": {
+                "name": "America/Los_Angeles"
+            },
+            "base_geo_id0": "6252001",
+            "seller_type": 2,
+            "partnerChannel": 1,
+            "ubo_region": "",
+            "base_region": "US"
+        },
+        "has_step_task": true,
+        "delegation_mode": {
+            "seller_center_delegation_switch_on": false,
+            "affiliate_delegation_mode_switch_on": false,
+            "delegation_identity": 2,
+            "delegation_protocol_signed": false
+        },
+        "uid_test_flag": 2,
+        "check_ddq_passed": true,
+        "ubo_region": "",
+        "base_region": "US"
+    }
+}
+
+// Order/get
+{
+    "code": 0,
+    "message": "success",
+    "data": {
+        "main_order": {
+            "main_order_id": "576706782786588825",
+            "combo_id": "576706782786982041",
+            "main_order_create_time": 1724347693,
+            "main_order_update_time": 1724351299,
+            "main_order_type": 0,
+            "delivery_option": 4,
+            "payment_type": 4,
+            "quantity": 1,
+            "main_order_status": 200,
+            "price_detail": {
+                "format_price": "USD 22.58",
+                "currency": "USD"
+            },
+            "region": "United States",
+            "available_actions": [
+                3,
+                20,
+                18,
+                4,
+                8,
+                2
+            ],
+            "order_lines": [
+                {
+                    "order_line_id": "576706782787244185",
+                    "main_order_id": "576706782786588825",
+                    "sku_id": "1729575014590157815",
+                    "sku_name": "2XL, Light Pink",
+                    "order_line_status": 0,
+                    "order_line_fulfillment_status": 1,
+                    "order_line_payment_status": 1,
+                    "price_detail": {
+                        "format_price": "USD 22.58",
+                        "currency": "USD"
+                    },
+                    "product_name": "Love Like Jesus Tee, Christian Shirt, Religious Gift Idea Jesus Shirt, Minimalistic Christian Apparel, Shirt for Church Baptism, Love Like Jesus Tee, Jesus Shirt, Gifts For Christians, Cute Christian Tees, Minimalist Christian, Religious Comfort Cotton",
+                    "product_image": {
+                        "height": 200,
+                        "width": 200,
+                        "thumb_uri": "tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e",
+                        "thumb_url_list": [
+                            "https://p19-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e~tplv-omjb5zjo8w-resize-jpeg:84:84.jpeg?from=645250395",
+                            "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e~tplv-omjb5zjo8w-resize-jpeg:84:84.jpeg?from=645250395"
+                        ],
+                        "uri": "tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e",
+                        "url_list": [
+                            "https://p19-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=645250395",
+                            "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=645250395"
+                        ]
+                    },
+                    "order_line_print": 1,
+                    "available_actions": [
+                        5
+                    ],
+                    "reverse_status": 0
+                }
+            ],
+            "buyer_info": {
+                "shipping_address": {
+                    "items": [
+                        {
+                            "key": "name",
+                            "value": "Gabriela Becerra"
+                        },
+                        {
+                            "key": "phone",
+                            "value": "(+1)7609847297"
+                        },
+                        {
+                            "key": "zipcode",
+                            "value": "92236"
+                        },
+                        {
+                            "key": "address",
+                            "value": "84562 Calle diego"
+                        },
+                        {
+                            "key": "address_detail",
+                            "value": ""
+                        },
+                        {
+                            "key": "house_number",
+                            "value": ""
+                        }
+                    ],
+                    "region": {
+                        "name": "United States",
+                        "geoname_id": "6252001"
+                    },
+                    "districts": [
+                        {
+                            "name": "California",
+                            "geoname_id": "5332921"
+                        },
+                        {
+                            "name": "Coachella",
+                            "geoname_id": "5338166"
+                        }
+                    ]
+                },
+                "buyer_nickname": "gabrielabecerra236",
+                "delivery_options": 4,
+                "delivery_option_desc": "ecom_logistics_type_SOF",
+                "avatar": {
+                    "height": 200,
+                    "width": 200,
+                    "thumb_uri": "tos-maliva-avt-0068/7335107039507611654",
+                    "thumb_url_list": [
+                        "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/7335107039507611654~c5_300x300.jpeg?lk3s=a5d48078\u0026nonce=27767\u0026refresh_token=dc1b2b0803e7621039aac2598f8bd82a\u0026x-expires=1724616000\u0026x-signature=8kPGupjSzeHKYqo1BxXQF0w%2FIy0%3D\u0026shp=a5d48078\u0026shcp=2675bd5b"
+                    ],
+                    "uri": "tos-maliva-avt-0068/7335107039507611654",
+                    "url_list": [
+                        "https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/7335107039507611654~c5_300x300.jpeg?lk3s=a5d48078\u0026nonce=27767\u0026refresh_token=dc1b2b0803e7621039aac2598f8bd82a\u0026x-expires=1724616000\u0026x-signature=8kPGupjSzeHKYqo1BxXQF0w%2FIy0%3D\u0026shp=a5d48078\u0026shcp=2675bd5b"
+                    ]
+                },
+                "delivery_preference": {
+                    "drop_off_location": ""
+                }
+            },
+            "pending_start_time": 1724347698,
+            "ship_on_time_sla": 1724779698,
+            "delivery_update_time": 0,
+            "buyer_note": "",
+            "trans_histories": [
+                {
+                    "description": "Buyer created order",
+                    "detail": "",
+                    "trans_time": 1724347698
+                },
+                {
+                    "description": "Order paid",
+                    "detail": "",
+                    "trans_time": 1724347698
+                }
+            ],
+            "payment_info": {
+                "subtotal": {
+                    "format_price": "USD 6.98",
+                    "currency": "USD"
+                },
+                "taxes": {
+                    "format_price": "USD 0.61",
+                    "currency": "USD"
+                },
+                "shipping_fee": {
+                    "format_price": "USD 14.99",
+                    "currency": "USD"
+                },
+                "platform_discount_total": {
+                    "format_price": "USD 0.00",
+                    "currency": "USD"
+                },
+                "seller_discount_total": {
+                    "format_price": "USD 0.00",
+                    "currency": "USD"
+                },
+                "grand_total": {
+                    "format_price": "USD 22.58",
+                    "currency": "USD"
+                },
+                "main_order_origin_sale_price": {
+                    "format_price": "USD 6.98",
+                    "currency": "USD"
+                },
+                "shipping_origin_fee": {
+                    "format_price": "USD 14.99",
+                    "currency": "USD"
+                },
+                "shipping_fee_discount_seller": {
+                    "format_price": "USD 0.00",
+                    "currency": "USD"
+                },
+                "shipping_fee_discount_platform": {
+                    "format_price": "USD 0.00",
+                    "currency": "USD"
+                }
+            },
+            "multi_status": 0,
+            "contact_buyer_link": "https://seller-us.tiktok.com/chat?from=customer_enter_from_order_list\u0026lang=en\u0026oec_seller_id=7495827757827787767\u0026orderId=576706782786588825\u0026shop_region=US\u0026token=0a5ea2dd7f6b378ec2551d6b86674ab10eebe2cb62a96e76065da902c20905edf65aa5eb889b433cba324a735a03aeaa2ab9de4d1995d461dce3060e54c5bd3d867881d85882943919e1525b9418b92efaa00dfc6c3852b7c2daadb63f1ef5aa1a490a3c6947071f37fedf88a1305b970f9b68036f39751c2743bf1bb9bfb7354fcacb97d145f35fcf2b427849442ace67097c2cee98719e2d3b7f86ad763e1110d596da0d18ebceace90122010480ec14f5\u0026version=v2",
+            "tracking_number": "",
+            "skus": [
+                {
+                    "product_name": "Love Like Jesus Tee, Christian Shirt, Religious Gift Idea Jesus Shirt, Minimalistic Christian Apparel, Shirt for Church Baptism, Love Like Jesus Tee, Jesus Shirt, Gifts For Christians, Cute Christian Tees, Minimalist Christian, Religious Comfort Cotton",
+                    "sku_name": "2XL, Light Pink",
+                    "quantity": 1,
+                    "product_image": {
+                        "height": 200,
+                        "width": 200,
+                        "thumb_uri": "tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e",
+                        "thumb_url_list": [
+                            "https://p19-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e~tplv-omjb5zjo8w-resize-jpeg:84:84.jpeg?from=645250395",
+                            "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e~tplv-omjb5zjo8w-resize-jpeg:84:84.jpeg?from=645250395"
+                        ],
+                        "uri": "tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e",
+                        "url_list": [
+                            "https://p19-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=645250395",
+                            "https://p16-oec-ttp.tiktokcdn-us.com/tos-useast5-i-omjb5zjo8w-tx/682aaedadc0a49a7afe17cb76f792d7e~tplv-omjb5zjo8w-origin-jpeg.jpeg?from=645250395"
+                        ]
+                    },
+                    "unit_price": {
+                        "format_price": "USD 6.98",
+                        "currency": "USD"
+                    },
+                    "total_price": {
+                        "format_price": "USD 6.98",
+                        "currency": "USD"
+                    },
+                    "sku_reverse_status": 0,
+                    "sku_fulfillment_failed_status": 1,
+                    "sku_id": "1729575014590157815",
+                    "seller_sku_name": "JS9",
+                    "presale": false,
+                    "sla": {
+                        "latest_rts_timestamp": 1724482799,
+                        "latest_tts_timestamp": 1724741999
+                    },
+                    "order_line_ids": [
+                        "576706782787244185"
+                    ],
+                    "sku_display_status": 111,
+                    "fulfill_unit_id": "1153339053411373209",
+                    "package_pickup_detail": {},
+                    "package_delivery_option": {
+                        "delivery_option": 4,
+                        "delivery_option_desc": "ecom_logistics_type_SOF"
+                    },
+                    "provider_info": {},
+                    "sku_status_description": "Arrange shipment as soon as possible to avoid late dispatch or order cancellation.",
+                    "product_type": 0,
+                    "sku_update_time": 1724351299
+                }
+            ],
+            "main_order_payment_time": 1724347698,
+            "logistic_info": {
+                "time": 1724347693,
+                "title": "Order placed",
+                "description": "Order placed."
+            },
+            "main_order_display_status": 101,
+            "main_order_display_sub_status": 1,
+            "fulfillment_status": 1,
+            "pay_method": "CCDC",
+            "reverse_progress": 0,
+            "rc_processing": false,
+            "delivery_option_desc": "ecom_logistics_type_SOF",
+            "latest_rts_timestamp": 1724482799,
+            "latest_tts_timestamp": 1724741999,
+            "main_order_stocking_timestamp": 1724351299,
+            "fulfillment_type": 0,
+            "warehouse_name": "Zulema Guillen Warehouse",
+            "warehouse_id": "7391227676579317546",
+            "split_combined_tag": 0,
+            "fulfill_unit_ids": [
+                "1153339053411373209"
+            ],
+            "seller_note_value": {
+                "seller_note_flag": 3,
+                "note_text": ""
+            },
+            "product_type": 0,
+            "top_up_no": "",
+            "phone_number": "",
+            "is_sof": false,
+            "logistics_service_type": 1,
+            "logistics_service_name": "Standard Shipping",
+            "logistics_service_id": "7129736060325594926",
+            "logistics_service_name_desc": "ecom_logistics_type_shipped_by_seller_standard",
+            "logistics_service_type_desc": "manage_orders_shipping_purchase_outside_platform_seller_shipping",
+            "unit_is_checked": {
+                "1153339053411373209": false
+            },
+            "pkg_attr_list": [
+                {
+                    "fulfill_unit_id": "1153339053411373209",
+                    "pkg_element": {
+                        "dimension": {
+                            "length": "10",
+                            "width": "10",
+                            "height": "3",
+                            "unit": 2
+                        },
+                        "weight": {
+                            "weight": "0.5",
+                            "unit": 2
+                        }
+                    }
+                }
+            ],
+            "processing_time_info": {
+                "processing_time": 4,
+                "latest_processing_timestamp": 1724741999,
+                "extend_limit": 0
+            },
+            "latest_delivery_time": 1725384498,
+            "ship_cancellation_plan_time": 1725433199,
+            "logistics_service_level": "Standard Shipping"
+        }
+    }
+}

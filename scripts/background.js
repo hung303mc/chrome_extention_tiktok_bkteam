@@ -1,5 +1,5 @@
 // CONTANTS
-const MB_URL = "http://bkteam.top/dungvuong-admin/api/Order_Sync_Amazon_to_System_Api_v2.php";
+const MB_URL = "http://bkteam.top/dungvuong-admin/api/Order_Sync_Tiktok_to_System_Api.php";
 
 let currentAutoApiKey = null;
 let doingAuto = false;
@@ -180,6 +180,33 @@ const convertTime = (orderDate) => {
   return result;
 };
 
+const convertTimePDT = (orderDate) => {
+  let dateStr = orderDate + "";
+  if (dateStr.length < 13) {
+    dateStr += "0".repeat(13 - dateStr.length);
+  }
+  const date = new Date(parseInt(dateStr));
+  const options = {
+    timeZone: "America/Los_Angeles",
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  };
+  const pstDate = new Intl.DateTimeFormat('en-US', options).format(date);
+
+  // Split the formatted string into components
+  const [month, day, year, hour, minute, second] = pstDate.match(/\d+/g);
+
+  // Construct the ISO string
+  const isoString = `${year}-${month}-${day}T${hour}:${minute}:${second}.000Z`;
+
+  return isoString;
+};
+
 const getShipping = (shippingAddress) => {
   if (objInvalid(shippingAddress)) return {};
   const { items, region, districts } = shippingAddress;
@@ -334,13 +361,17 @@ const getOrderInfo = (mainOrder) => {
     logistics_service_name,
     main_order_create_time,
     price_detail,
+    latest_tts_timestamp,  // Lấy latest_tts_timestamp
+    latest_delivery_time,  // Lấy latest_delivery_time
   } = mainOrder;
 
   const { shipping_address, buyer_nickname } = buyer_info || {};
   const shipping = getShipping(shipping_address);
   const buyer = getBuyer(buyer_nickname || shipping?.name);
   const items = getItems(skus);
-  const orderCreated = convertTime(main_order_create_time);
+  const orderCreated = convertTimePDT(main_order_create_time);
+  const shipBy = convertTimePDT(latest_tts_timestamp);  // Chuyển đổi latest_tts_timestamp
+  const deliveryBy = convertTimePDT(latest_delivery_time);  // Chuyển đổi latest_delivery_time
 
   return {
     orderID: main_order_id,
@@ -350,9 +381,12 @@ const getOrderInfo = (mainOrder) => {
     shippingTotal: 0,
     items,
     orderCreated,
+    shipBy,  // Lưu thời gian ship by
+    deliveryBy,  // Lưu thời gian delivery by
     priceDetail: Number.parseFloat(getPrice(price_detail?.format_price)),
   };
 };
+
 
 const SPLIT_PRODUCT_ID = "__TH__";
 const genProductIds = (order) => {
@@ -423,16 +457,21 @@ const sendToContentScript = (msg, data) =>
 
 const sendRequestToMB = async (endPoint, apiKey, data) => {
   const res = {
-    data: null,
     error: null,
   };
-  const url = endPoint ? MB_URL.replace("/query", endPoint) : MB_URL;
+  if (!apiKey) apiKey = await getMBApiKey();
+
+  let url = MB_URL;
+  if (endPoint) {
+    url += `?case=${endPoint}`;
+  }
+
   try {
     const resp = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${apiKey}`,
+        "merchantId": apiKey, // Sử dụng merchantId như một apiKey
       },
       body: data,
     });
@@ -442,6 +481,7 @@ const sendRequestToMB = async (endPoint, apiKey, data) => {
   }
   return res;
 };
+
 
 const getMBApiKey = () =>
   new Promise(async (resolve) => {
@@ -565,21 +605,16 @@ chrome.runtime.onConnect.addListener((port) => {
           const apiKey = await getMBApiKey();
           if (!apiKey) return;
 
-          const orderIds = orders.map((o) => o["orderId"]);
           const query = JSON.stringify({
-            query: `
-              query {
-                checkTiktokOrderSyncedByIDs (
-                      ids: ${JSON.stringify(orderIds)}
-                    )
-                }
-              `,
+            originIds: JSON.stringify(orders.map((o) => o["orderId"]))
           });
-          const result = await sendRequestToMB(null, apiKey, query);
-          resp.mbInfo = result.data
-            ? result.data.checkTiktokOrderSyncedByIDs
-            : null;
-          resp.error = result.errors ? result.errors[0].message : null;
+          const result = await sendRequestToMB("checkTiktokSyncedOrders", apiKey, query);
+          resp.mbInfo = result.data;
+          resp.error = result.error
+              ? result.error
+              : result.errors
+                  ? result.errors[0].message
+                  : null;
 
           sendToContentScript("orders", resp);
         }
@@ -708,14 +743,9 @@ async function handleSyncOrderImpl({ order, index, len, apiKey }) {
 
   // sync order to MB
   let query = JSON.stringify({
-    operationName: "createTiktokOrder",
-    variables: {
-      input: [newOrder],
-    },
-    query:
-      "mutation createTiktokOrder($input: [NewTiktokOrder!]!) {createTiktokOrder(input: $input) {error}}",
+      input: newOrder
   });
-  const result = await sendRequestToMB(null, apiKey, query);
+  const result = await sendRequestToMB("createTiktokOrder", apiKey, query);
   const messResp = { data: true, error: null };
   if (result.error) messResp.error = result.error;
   else if (result.errors?.length) messResp.error = result.errors[0].message;
@@ -833,21 +863,16 @@ chrome.runtime.onMessage.addListener(async (req, sender) => {
         const apiKey = await getMBApiKey();
         if (!apiKey) return;
 
-        const orderIds = orders.map((o) => o["orderId"]);
         const query = JSON.stringify({
-          query: `
-            query {
-              checkTiktokOrderSyncedByIDs (
-                    ids: ${JSON.stringify(orderIds)}
-                  )
-              }
-            `,
+          originIds: JSON.stringify(orders.map((o) => o["orderId"]))
         });
-        const result = await sendRequestToMB(null, apiKey, query);
-        resp.mbInfo = result.data
-          ? result.data.checkTiktokOrderSyncedByIDs
-          : null;
-        resp.error = result.errors ? result.errors[0].message : null;
+        const result = await sendRequestToMB("checkTiktokSyncedOrders", apiKey, query);
+        resp.mbInfo = result.data;
+        resp.error = result.error
+            ? result.error
+            : result.errors
+                ? result.errors[0].message
+                : null;
 
         sendToContentScript("orders", resp);
       }

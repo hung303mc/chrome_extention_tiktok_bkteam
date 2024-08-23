@@ -1,4 +1,4 @@
-const mbApi = "MBApi";
+var mbApi = "MBApi";
 const addonCollapsible = "AddonCollapsible";
 
 // Markups
@@ -274,10 +274,10 @@ const checkAddonCollapse = async () => {
 
 const init = async () => {
   const apiKey = await getStorage(mbApi);
-  if (!apiKey || !apiKey.includes("tiktokapi")) {
-    notifyError("Please enter MB api key.");
-    return;
-  }
+  // if (!apiKey || !apiKey.includes("tiktokapi")) {
+  //   notifyError("Please enter MB api key.");
+  //   return;
+  // }
 
   // embedding addon into tiktok
   if (!window.location.href.includes("seller-us.tiktok.com/order")) return;
