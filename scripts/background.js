@@ -836,7 +836,7 @@ const maybeOpenURL = () => {
 };
 
 // ===> capture event from `content_script`
-chrome.runtime.onMessage.addListener(async (req, sender) => {
+chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
   const { message, data, endpoint } = req || {};
   switch (message) {
     case "responseData":
@@ -911,6 +911,20 @@ chrome.runtime.onMessage.addListener(async (req, sender) => {
           return;
         OrderInfo.productId = genProductIds(order);
       }
+      break;
+
+    case "InfoTrackingCompleteOnly":
+      // Lấy thông tin từ request
+      const { orderId: infoOrderId, tracking: infoTracking } = req;
+
+      // Gửi thông tin order và tracking lên server
+      const infoQuery = JSON.stringify({
+        orderId: infoOrderId,
+        trackingCode: infoTracking,
+      });
+
+      const resInfoTrack = await sendRequestToMB("addedTrackingCode", null, infoQuery);
+      // Không điều hướng sau khi gửi thông tin, chỉ thực hiện phần gửi thông tin này
       break;
 
     case "addTrackingComplete":

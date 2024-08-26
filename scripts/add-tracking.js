@@ -11,6 +11,7 @@ const INPUT_TRACKING_ID = "input[placeholder='Enter tracking ID']";
 const INPUT_SHIPPING_PROVIDER = "input[placeholder='Select shipping provider']";
 const CARRIER_OPTION = '.theme-arco-trigger li[role="option"]';
 const BTN_CONFIRM = 'button[data-log_click_for="confirm_shipment"]';
+const BTN_MANAGE_ORDER = 'button[data-log_click_for="go_to_order_list"]';
 
 const ADD_TRACKING_MSG = {
   base: "Add Trackings",
@@ -114,13 +115,24 @@ $(document).on("click", ADD_TRACKING_BTN, async function () {
     const cls = `.add-tracking-item[data-order-id="${orderId}"]`;
     $(cls).addClass("loader");
     await executeAddTracking({ orderId, tracking, carrier });
+
+    // Gửi thông điệp đến background.js với thông tin orderId và tracking
+    chrome.runtime.sendMessage({
+      message: "InfoTrackingCompleteOnly",
+      orderId,
+      tracking
+    });
+
     await sleep(4000);
     $(cls).removeClass("loader");
   }
 
   $(this).removeClass("loader");
+  // Gửi thông điệp đến background.js với thông tin orderId và tracking
   chrome.runtime.sendMessage({
     message: "addTrackingComplete",
+    orderId,
+    tracking
   });
 });
 
@@ -241,7 +253,7 @@ const executeAddTracking = async ({ orderId, tracking, carrier = "" }) => {
     return;
   }
 
-  const addTrackingbyId = `tr[data-log_main_order_id="${orderId}"] ${BTN_ADD_TRACKING}`;
+  const addTrackingbyId = `tr:has(div[data-log_main_order_id="${orderId}"]) ${BTN_ADD_TRACKING}`;
   let countBtnAT = 0;
   while (true) {
     if (countBtnAT === 30) {
@@ -249,13 +261,14 @@ const executeAddTracking = async ({ orderId, tracking, carrier = "" }) => {
       return;
     }
     if ($(addTrackingbyId).length > 0) break;
+    console.log("Attempt", countBtnAT + 1, "failed. Element not found:", addTrackingbyId);
+
 
     countBtnAT += 1;
     await sleep(1000);
   }
 
   $(addTrackingbyId).length > 0 && $(addTrackingbyId).trigger("click");
-
   // await for load new DOM
   await sleep(3000);
   // check again by orderId
@@ -356,6 +369,22 @@ const executeAddTracking = async ({ orderId, tracking, carrier = "" }) => {
       $("#add_tracking .table_wrap").append(orderNotFound);
   }
   notifySuccess("Add tracking success.");
+  await sleep(1000);
+
+  let countBtnManageOrder = 0;
+  while (true) {
+    if (countBtnManageOrder === 30) {
+      notifyError(ERR_MSG.btnManageOrder);
+      return;
+    }
+
+    if ($(BTN_MANAGE_ORDER).length > 0) break;
+
+    countBtnManageOrder += 1;
+    await sleep(3000);
+  }
+
+  $(BTN_MANAGE_ORDER).trigger("click");
   await sleep(1000);
 };
 

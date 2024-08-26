@@ -23,6 +23,8 @@ $(document).on("click", CL_ITEM_SELECTOR, async function () {
 
   chrome.runtime.sendMessage({
     message: "addTrackingComplete",
+    orderId: orderId,
+    tracking: "Shipping_By_Tiktok"
   });
 });
 
