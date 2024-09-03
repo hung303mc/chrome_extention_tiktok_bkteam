@@ -2,8 +2,8 @@
 "update_url": "https://clients2.google.com/service/update2/crx",
 
   "manifest_version": 3,
-  "name": "Bkteam Tiktok Helper",
-  "version": "0.0.21",
+  "name": "Bkteam Tiktok Helper v3",
+  "version": "1.0.3",
   "description": "An extension to help you fulfill Tiktok orders easier with Bkteam.",
   "devtools_page": "devtool/devtool.html",
   "icons": {
@@ -42,7 +42,7 @@
     "extension_pages": "script-src 'self'; object-src 'self'",
     "sandbox": "sandbox allow-scripts; script-src 'self' 'https://seller-us.tiktok.com/*'; object-src 'self'"
   },
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "tabs" ],
   "host_permissions": [
     "https://seller-us.tiktok.com/*",
     "https://bkteam.top/dungvuong-admin/*",

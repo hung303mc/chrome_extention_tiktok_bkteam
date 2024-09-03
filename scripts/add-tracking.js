@@ -310,39 +310,80 @@ const executeAddTracking = async ({ orderId, tracking, carrier = "" }) => {
   document.execCommand("insertText", false, tracking);
   inputTrackingId.blur();
 
+  await sleep(2000);
+  // Kích hoạt phím Tab để kích hoạt hệ thống
+  triggerTabKey();
+
   // const carrierEvent = document.createEvent("HTMLEvents");
   //  carrierEvent.initEvent("change", true, true);
   //  $select.dispatchEvent(carrierEvent);
-  await sleep(2000);
-
-  $(INPUT_SHIPPING_PROVIDER).trigger("click");
   await sleep(3000);
 
-  let countOpt = 0;
-  while (true) {
-    if (countOpt === 30) {
-      notifyError(ERR_MSG.carrier);
-      return;
+  let carrierSelected;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    // Kiểm tra nếu TikTok đã chọn hãng vận chuyển tự động
+    carrierSelected = $(INPUT_SHIPPING_PROVIDER).val(); // Lấy giá trị của hãng vận chuyển đã được chọn
+
+    if (carrierSelected) {
+      break; // Nếu TikTok đã tự động thêm carrier, thoát vòng lặp
     }
 
-    if ($(CARRIER_OPTION).length > 0) break;
-    countOpt += 1;
-    await sleep(1000);
+    // Nếu TikTok chưa tự động chọn carrier, xóa tracking cũ và thêm lại
+    inputTrackingId.focus();
+    inputTrackingId.val(""); // Xóa tracking hiện tại
+    await sleep(500); // Chờ một chút để hệ thống nhận diện
+    document.execCommand("insertText", false, tracking); // Thêm lại tracking
+    inputTrackingId.blur();
+    await sleep(2000);
+
+    // Kích hoạt phím Tab để kích hoạt hệ thống
+    triggerTabKey();
+    await sleep(10000); // Chờ 10 giây
   }
 
-  for (let i = 1; i <= $(CARRIER_OPTION).length; i++) {
-    const opt = $(`${CARRIER_OPTION}:nth-child(${i})`);
-    if (!opt || !opt.text()) continue;
+  // Nếu sau 3 lần vẫn không có carrier, thêm carrier manually
+  if (!carrierSelected) { // Nếu không có hãng vận chuyển nào được chọn
+    $(INPUT_SHIPPING_PROVIDER).trigger("click");
+    await sleep(3000);
 
-    if (opt.text() !== carrierCode) {
-      $(opt).attr("aria-selected", "");
-      $(opt).removeClass("theme-arco-select-option-selected");
-    } else {
-      $(opt).attr("aria-selected", "true");
-      $(opt).addClass("theme-arco-select-option-selected");
-      $(INPUT_TRACKING_ID).val(carrierCode);
+    let countOpt = 0;
+    while (true) {
+      if (countOpt === 30) {
+        notifyError(ERR_MSG.carrier);
+        return;
+      }
 
-      $(opt).trigger("click");
+      if ($(CARRIER_OPTION).length > 0) break;
+      countOpt += 1;
+      await sleep(1000);
+    }
+
+    for (let i = 1; i <= $(CARRIER_OPTION).length; i++) {
+      const opt = $(`${CARRIER_OPTION}:nth-child(${i})`);
+      if (!opt || !opt.text()) continue;
+
+      if (opt.text() !== carrierCode) {
+        $(opt).attr("aria-selected", "");
+        $(opt).removeClass("theme-arco-select-option-selected");
+      } else {
+        $(opt).attr("aria-selected", "true");
+        $(opt).addClass("theme-arco-select-option-selected");
+        $(INPUT_TRACKING_ID).val(carrierCode);
+
+        $(opt).trigger("click");
+        await sleep(3000);
+
+        // Sau khi thêm carrier manual, nhập lại tracking number
+        inputTrackingId.focus();
+        inputTrackingId.val("");
+        document.execCommand("insertText", false, tracking);
+        inputTrackingId.blur();
+        await sleep(2000);
+
+        // Kích hoạt phím Enter để kích hoạt hệ thống
+        triggerTabKey();
+        await sleep(2000);
+      }
     }
   }
 
@@ -386,6 +427,11 @@ const executeAddTracking = async ({ orderId, tracking, carrier = "" }) => {
 
   $(BTN_MANAGE_ORDER).trigger("click");
   await sleep(1000);
+};
+
+const triggerTabKey = () => {
+  const e = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, keyCode: 9 });
+  document.dispatchEvent(e);
 };
 
 {
