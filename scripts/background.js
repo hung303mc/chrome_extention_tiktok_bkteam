@@ -743,7 +743,8 @@ async function handleSyncOrderImpl({ order, index, len, apiKey }) {
 
   // sync order to MB
   let query = JSON.stringify({
-      input: newOrder
+      input: newOrder,
+      merchantId: apiKey  // Thêm merchantId vào query
   });
   const result = await sendRequestToMB("createTiktokOrder", apiKey, query);
   const messResp = { data: true, error: null };
