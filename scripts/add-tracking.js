@@ -79,6 +79,10 @@ $(document).on("click", AT_ITEM_SELECTOR, async function () {
 });
 
 $(document).on("click", ADD_TRACKING_BTN, async function () {
+  let lastOrderId = null;
+  let lastTracking = null;
+  let lastCarrier = null;
+
   const orders = [];
   let isAddTrackingSpecify = false;
   $(AT_SELECTOR).each(function () {
@@ -123,16 +127,28 @@ $(document).on("click", ADD_TRACKING_BTN, async function () {
       tracking
     });
 
+    // Lưu lại thông tin order cuối cùng để dùng sau vòng lặp
+    lastOrderId = orderId;
+    lastTracking = tracking;
+    lastCarrier = carrier;
+
     await sleep(4000);
     $(cls).removeClass("loader");
   }
 
   $(this).removeClass("loader");
+  const isAuto = await getStorage("_mb_auto");
+  if(isAuto) {
+    await setStorage("_mb_auto", false);
+    console.log("addTrackingComplete. Setting syncStatus to 'done'.");
+    localStorage.setItem('syncStatus', 'done');
+  }
+
   // Gửi thông điệp đến background.js với thông tin orderId và tracking
   chrome.runtime.sendMessage({
     message: "addTrackingComplete",
-    orderId,
-    tracking
+    orderId: lastOrderId,
+    tracking: lastTracking
   });
 });
 
@@ -320,26 +336,26 @@ const executeAddTracking = async ({ orderId, tracking, carrier = "" }) => {
   await sleep(3000);
 
   let carrierSelected;
-  for (let attempt = 0; attempt < 3; attempt++) {
-    // Kiểm tra nếu TikTok đã chọn hãng vận chuyển tự động
-    carrierSelected = $(INPUT_SHIPPING_PROVIDER).val(); // Lấy giá trị của hãng vận chuyển đã được chọn
-
-    if (carrierSelected) {
-      break; // Nếu TikTok đã tự động thêm carrier, thoát vòng lặp
-    }
-
-    // Nếu TikTok chưa tự động chọn carrier, xóa tracking cũ và thêm lại
-    inputTrackingId.focus();
-    inputTrackingId.val(""); // Xóa tracking hiện tại
-    await sleep(500); // Chờ một chút để hệ thống nhận diện
-    document.execCommand("insertText", false, tracking); // Thêm lại tracking
-    inputTrackingId.blur();
-    await sleep(2000);
-
-    // Kích hoạt phím Tab để kích hoạt hệ thống
-    triggerTabKey();
-    await sleep(10000); // Chờ 10 giây
-  }
+  // for (let attempt = 0; attempt < 3; attempt++) {
+  //   // Kiểm tra nếu TikTok đã chọn hãng vận chuyển tự động
+  //   carrierSelected = $(INPUT_SHIPPING_PROVIDER).val(); // Lấy giá trị của hãng vận chuyển đã được chọn
+  //
+  //   if (carrierSelected) {
+  //     break; // Nếu TikTok đã tự động thêm carrier, thoát vòng lặp
+  //   }
+  //
+  //   // Nếu TikTok chưa tự động chọn carrier, xóa tracking cũ và thêm lại
+  //   inputTrackingId.focus();
+  //   inputTrackingId.val(""); // Xóa tracking hiện tại
+  //   await sleep(500); // Chờ một chút để hệ thống nhận diện
+  //   document.execCommand("insertText", false, tracking); // Thêm lại tracking
+  //   inputTrackingId.blur();
+  //   await sleep(2000);
+  //
+  //   // Kích hoạt phím Tab để kích hoạt hệ thống
+  //   triggerTabKey();
+  //   await sleep(10000); // Chờ 10 giây
+  // }
 
   // Nếu sau 3 lần vẫn không có carrier, thêm carrier manually
   if (!carrierSelected) { // Nếu không có hãng vận chuyển nào được chọn

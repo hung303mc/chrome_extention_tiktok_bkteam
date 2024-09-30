@@ -181,30 +181,37 @@ const convertTime = (orderDate) => {
 };
 
 const convertTimePDT = (orderDate) => {
-  let dateStr = orderDate + "";
-  if (dateStr.length < 13) {
-    dateStr += "0".repeat(13 - dateStr.length);
+  try {
+    let dateStr = orderDate + "";
+    if (dateStr.length < 13) {
+      dateStr += "0".repeat(13 - dateStr.length);
+    }
+    const date = new Date(parseInt(dateStr));
+    if (isNaN(date.getTime())) {
+      return null; // Thêm đoạn này để kiểm tra giá trị date hợp lệ
+    }
+    const options = {
+      timeZone: "America/Los_Angeles",
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    };
+    const pstDate = new Intl.DateTimeFormat('en-US', options).format(date);
+
+    // Split the formatted string into components
+    const [month, day, year, hour, minute, second] = pstDate.match(/\d+/g);
+
+    // Construct the ISO string
+    const isoString = `${year}-${month}-${day}T${hour}:${minute}:${second}.000Z`;
+
+    return isoString;
+  } catch (error) {
+    return null; // Thêm đoạn này để trả về null nếu có lỗi
   }
-  const date = new Date(parseInt(dateStr));
-  const options = {
-    timeZone: "America/Los_Angeles",
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  };
-  const pstDate = new Intl.DateTimeFormat('en-US', options).format(date);
-
-  // Split the formatted string into components
-  const [month, day, year, hour, minute, second] = pstDate.match(/\d+/g);
-
-  // Construct the ISO string
-  const isoString = `${year}-${month}-${day}T${hour}:${minute}:${second}.000Z`;
-
-  return isoString;
 };
 
 const getShipping = (shippingAddress) => {
@@ -971,7 +978,7 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
     }
 
     doingAuto = true;
-    currentAutoApiKey = req?.apiKey;
+    // currentAutoApiKey = req?.apiKey;
     maybeOpenURL();
 
     return;

@@ -305,8 +305,8 @@ const init = async () => {
 
 $(document).ready(async function () {
   // await sleep(3500);
-  await setStorage("_mb_auto", false);
-  await setStorage("_mb_auto_key", null);
+  // await setStorage("_mb_auto", false);
+  // await setStorage("_mb_auto_key", null);
 
   init();
 });

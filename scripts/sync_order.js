@@ -193,7 +193,8 @@ const convertOrderToObj = (orders) => {
 };
 
 const appendOrdersIntoTable = (data) => {
-  removeTableLoading();
+  return new Promise((resolve) => {
+    removeTableLoading();
   if (!data) return;
   const { orders, mbInfo = {} } = data;
 
@@ -356,6 +357,10 @@ const appendOrdersIntoTable = (data) => {
     }
     $("#create_label .btn-create-label-wrap").css("display", "none")
   }
+
+    // Sau khi append xong, resolve promise
+    resolve();
+  });
 };
 
 // control sub-tabs inside tab sync orders
@@ -391,25 +396,52 @@ chrome.runtime.onMessage.addListener(async function (req, sender, res) {
       return;
     }
 
-    appendOrdersIntoTable(data);
-    setDivHeight();
+    appendOrdersIntoTable(data).then(async () => {
+      setDivHeight();
 
-    const isAuto = await getStorage("_mb_auto");
-    const autoKey = await getStorage("_mb_auto_key");
-    // mb_tiktok_orders = data;
-    if (isAuto && autoKey) {
-      $(".om-addon #not_synced #sync-order").trigger('click');
-      return;
-      chrome.runtime.sendMessage({
-        message: "autoSyncOrderToMB",
-        domain: window.location.origin,
-        // currentPage: currentPage,
-        data: {
-          apiKey: autoKey,
-          orders: data?.orders,
-        },
-      });
-    }
+      const isAuto = await getStorage("_mb_auto");
+      const autoKey = await getStorage(mbApi);
+      // mb_tiktok_orders = data;
+      if (isAuto && autoKey) {
+        // Kiểm tra nếu lần đầu tiên sync
+        if (!localStorage.getItem('syncCompleted')) {
+          // Nếu chưa sync, thực hiện click nút Sync Order
+          console.log("First time syncing orders. Clicking Sync Order.");
+          // Đợi 5 giây trước khi click nút "Sync Order"
+          setTimeout(() => {
+            console.log("Clicking Sync Order after 1 second.");
+            $(".om-addon #not_synced #sync-order").trigger('click');
+            localStorage.setItem('syncCompleted', 'true');  // Lưu trạng thái đã sync vào localStorage
+          }, 5000);  // Đợi 5 giây trước khi click nút Sync Order
+        } else {
+          localStorage.removeItem('syncCompleted');
+          // Nếu đã sync, lần thứ 2 sẽ click Add Tracking
+          console.log("Sync completed. Clicking Add Tracking.");
+          $("button.tablinks[data-name='add_tracking']").trigger("click");
+
+          // Đợi một chút để tab được mở
+          setTimeout(() => {
+            // Sau khi tab mở, click vào nút Add Tracking
+            console.log("Tab opened, clicking on the 'Add Tracking' button.");
+            $("#btn-add-tracking").trigger("click");
+
+            // Xóa trạng thái syncCompleted sau khi hoàn thành việc Add Tracking
+            console.log("Add Tracking completed. Removing syncCompleted status.");
+          }, 1000);  // Đợi 1 giây trước khi click vào nút
+        }
+        return;
+        chrome.runtime.sendMessage({
+          message: "autoSyncOrderToMB",
+          domain: window.location.origin,
+          // currentPage: currentPage,
+          data: {
+            apiKey: autoKey,
+            orders: data?.orders,
+          },
+        });
+      }
+    });
+
 
     return;
   }
@@ -440,10 +472,9 @@ chrome.runtime.onMessage.addListener(async function (req, sender, res) {
     res({ message: "received" });
     notifySuccess("Auto synced orders");
     $("#sync-order").removeClass("loader");
-    setTimeout(() => {
-      const event = new CustomEvent("mb_sync_done");
-      window.dispatchEvent(event);
-    }, 5 * 1000);
+    // console.log("Dispatching event: mb_sync_done");
+    // const event = new CustomEvent("mb_sync_done");
+    // window.dispatchEvent(event);
   }
 });
 
@@ -546,22 +577,27 @@ $(document).on("click", ".sync-order-item", async function () {
 });
 
 window.addEventListener("mb_sync_now", async (event) => {
+  console.log("Event 'mb_sync_now' received:", event); // Log sự kiện để kiểm tra
+
+  // Lưu trạng thái vào localStorage để báo rằng extension đã sẵn sàng
+  localStorage.setItem('_extension_ready', 'true');
+
   // setTimeout(() => {
   //   const event = new CustomEvent("mb_sync_done");
   //   window.dispatchEvent(event);
   // }, 10 * 1000)
   // console.log('OK__event', event?.detail)
-  if (event?.detail?.mb_api) {
+  // if (event?.detail?.mb_api) {
     await setStorage("_mb_auto", true);
-    await setStorage("_mb_auto_key", event?.detail?.mb_api?.tiktok);
-    await setStorage(mbApi, event?.detail?.mb_api?.tiktok);
+    // await setStorage("_mb_auto_key", event?.detail?.mb_api?.tiktok);
+    // await setStorage(mbApi, event?.detail?.mb_api?.tiktok);
     chrome.runtime.sendMessage({
       message: "autoReady",
       domain: window.location.origin,
-      apiKey: event?.detail?.mb_api?.tiktok,
+      // apiKey: event?.detail?.mb_api?.tiktok,
       // currentPage: currentPage,
     });
-  }
+  // }
 });
 
 // click button Sync Selected Orders
@@ -585,8 +621,40 @@ $(document).on("click", "#sync-order", async function () {
     }
     orders.push(order);
   });
+
+  const isAuto = await getStorage("_mb_auto");
+  const autoKey = await getStorage(mbApi);
+
+  // Log the number of orders found to localStorage for Selenium to read
+  console.log("Found orders length:", orders.length);
+  localStorage.setItem('orderLength', orders.length);
+
   if (orders.length == 0) {
     notifyError("Order not found.");
+
+    if(isAuto){
+      localStorage.removeItem('syncCompleted');
+
+      // Kiểm tra nếu không có tracking trong tbody thì đặt syncStatus là 'done'
+      if ($(`#add_tracking tbody tr`).length == 0) {
+        console.log("No tracking data found in tbody. Setting syncStatus to 'done'.");
+        await setStorage("_mb_auto", false);
+        localStorage.setItem('syncStatus', 'done');
+      } else {
+        // Nếu có tracking, trước tiên cần click vào tab "Add Tracking"
+        console.log("Clicking on the 'Add Tracking' tab to reveal the button.");
+
+        // Giả lập click vào tab chứa Add Tracking
+        $("button.tablinks[data-name='add_tracking']").trigger("click");
+
+        // Đợi một chút để tab được mở (ví dụ 1 giây)
+        setTimeout(() => {
+          // Sau khi tab mở, click vào nút Add Tracking
+          console.log("Tab opened, clicking on the 'Add Tracking' button.");
+          $("#btn-add-tracking").trigger("click");
+        }, 1000);  // Đợi 1 giây trước khi click vào nút
+      }
+    }
     return;
   }
   $(this).addClass("loader");
@@ -597,8 +665,7 @@ $(document).on("click", "#sync-order", async function () {
   // console.log( 'DYN_ORDER', mb_tiktok_orders);
   // return;
 
-  const isAuto = await getStorage("_mb_auto");
-  const autoKey = await getStorage("_mb_auto_key");
+
   // send order ids to background
   chrome.runtime.sendMessage({
     message: "syncOrderToMB",
