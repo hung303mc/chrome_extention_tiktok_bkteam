@@ -848,11 +848,13 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
   const { message, data, endpoint } = req || {};
   switch (message) {
     case "responseData":
-      if (!data) break;
-
+      // Kiểm tra cả data và endpoint
+      if (!data || !endpoint) break;
+      
       if (
         endpoint.includes("fulfillment/order/list") ||
-        endpoint.includes("fulfillment/order/na/list")
+        endpoint.includes("fulfillment/order/na/list") ||
+        endpoint.includes("fulfillment/na/order/list")
       ) {
         const orders = getOrderData(data);
 

@@ -1,6 +1,7 @@
 const ENPOINTS = [
   "/api/fulfillment/order/list", // get orders
   "/api/fulfillment/order/na/list", // get orders
+  "/api/fulfillment/na/order/list", // get orders - sửa lại endpoint này
   "/api/v3/trade/orders/get", // get order detail
   "/api/v1/pay/statement/order/list", // get pay order
   "/api/fulfillment/order/get", // get product_id
@@ -8,6 +9,8 @@ const ENPOINTS = [
 
   "/api/v1/fulfillment/shipping_doc/generate", // generate shipping docs
 ];
+
+console.log("🟢 Injected script đã được tải vào trang");
 
 const { fetch: origFetch } = window;
 window.fetch = async (...args) => {
