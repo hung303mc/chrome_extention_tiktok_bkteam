@@ -415,19 +415,26 @@ chrome.runtime.onMessage.addListener(async function (req, sender, res) {
           }, 5000);  // Đợi 5 giây trước khi click nút Sync Order
         } else {
           localStorage.removeItem('syncCompleted');
-          // Nếu đã sync, lần thứ 2 sẽ click Add Tracking
-          console.log("Sync completed. Clicking Add Tracking.");
-          $("button.tablinks[data-name='add_tracking']").trigger("click");
 
-          // Đợi một chút để tab được mở
-          setTimeout(() => {
-            // Sau khi tab mở, click vào nút Add Tracking
-            console.log("Tab opened, clicking on the 'Add Tracking' button.");
-            $("#btn-add-tracking").trigger("click");
+          // Kiểm tra nếu không có tracking trong tbody thì đặt syncStatus là 'done'
+          if ($(`#add_tracking tbody tr`).length == 0) {
+            console.log("No tracking data found in tbody. Setting syncStatus to 'done'.");
+            await setStorage("_mb_auto", false);
+            localStorage.setItem('syncStatus', 'done');
+          } else {
+            // Nếu có tracking, trước tiên cần click vào tab "Add Tracking"
+            console.log("Clicking on the 'Add Tracking' tab to reveal the button.");
 
-            // Xóa trạng thái syncCompleted sau khi hoàn thành việc Add Tracking
-            console.log("Add Tracking completed. Removing syncCompleted status.");
-          }, 1000);  // Đợi 1 giây trước khi click vào nút
+            // Giả lập click vào tab chứa Add Tracking
+            $("button.tablinks[data-name='add_tracking']").trigger("click");
+
+            // Đợi một chút để tab được mở (ví dụ 1 giây)
+            setTimeout(() => {
+              // Sau khi tab mở, click vào nút Add Tracking
+              console.log("Tab opened, clicking on the 'Add Tracking' button.");
+              $("#btn-add-tracking").trigger("click");
+            }, 1000);  // Đợi 1 giây trước khi click vào nút
+          }
         }
         return;
         chrome.runtime.sendMessage({
