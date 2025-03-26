@@ -6,6 +6,7 @@ const ENPOINTS = [
   "/api/v1/pay/statement/order/list", // get pay order
   "/api/fulfillment/order/get", // get product_id
   "/api/fulfillment/order/na/get", // get product_id
+  "/api/fulfillment/na/order/get", // get product_id
 
   "/api/v1/fulfillment/shipping_doc/generate", // generate shipping docs
 ];

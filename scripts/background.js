@@ -1,6 +1,8 @@
 // CONTANTS
 const MB_URL = "http://bkteam.top/dungvuong-admin/api/Order_Sync_Tiktok_to_System_Api.php";
 
+console.log("===> Debug: Background script loaded");
+
 let currentAutoApiKey = null;
 let doingAuto = false;
 let doingAutoSyncing = false;
@@ -650,7 +652,8 @@ chrome.runtime.onConnect.addListener((port) => {
         // get product_id
         if (
           endpoint.includes("/fulfillment/order/get") ||
-          endpoint.includes("/fulfillment/order/na/get")
+          endpoint.includes("/fulfillment/order/na/get") ||
+          endpoint.includes("/fulfillment/na/order/get")
         ) {
           const mainOrder = data?.data?.main_order;
           const [order] = (mainOrder || []).filter(Boolean);
@@ -913,7 +916,8 @@ chrome.runtime.onMessage.addListener(async (req, sender, sendResponse) => {
       // get product_id
       if (
         endpoint.includes("/fulfillment/order/get") ||
-        endpoint.includes("/fulfillment/order/na/get")
+        endpoint.includes("/fulfillment/order/na/get") ||
+        endpoint.includes("/fulfillment/na/order/get")
       ) {
         const mainOrder = data?.data?.main_order;
         const [order] = (mainOrder || []).filter(Boolean);
