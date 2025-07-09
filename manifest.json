@@ -2,8 +2,8 @@
 "update_url": "https://clients2.google.com/service/update2/crx",
 
   "manifest_version": 3,
-  "name": "Bkteam Tiktok Helper v8",
-  "version": "1.0.8",
+  "name": "Bkteam Tiktok Helper v9",
+  "version": "1.0.9",
   "description": "An extension to help you fulfill Tiktok orders easier with Bkteam.",
   "devtools_page": "devtool/devtool.html",
   "icons": {
