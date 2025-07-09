@@ -11,20 +11,31 @@ const ENPOINTS = [
   "/api/v1/fulfillment/shipping_doc/generate", // generate shipping docs
 ];
 
-console.log("🟢 Injected script đã được tải vào trang");
+console.log("🟢 Injected script: Phép thử 3 (Lấy URL an toàn)");
 
 const { fetch: origFetch } = window;
 window.fetch = async (...args) => {
-  const response = await origFetch(...args);
-  const url = args[0];
-  if (url && ENPOINTS.some((i) => !!url.match(new RegExp(i, "gi")))) {
-    response
-      .clone()
-      .json() // maybe json(), text(), blob()
-      .then((data) => {
-        window.postMessage({ endpoint: url, data: data }, "*"); // send to content script
-      })
-      .catch((err) => console.error(err));
-  }
-  return response;
+    // Lấy URL một cách an toàn
+    let url;
+    if (typeof args[0] === 'string') {
+        url = args[0]; // Nếu là chuỗi thì gán trực tiếp
+    } else if (args[0] instanceof Request) {
+        url = args[0].url; // Nếu là object Request thì lấy thuộc tính .url
+    }
+
+    const response = await origFetch(...args);
+
+    // Vẫn kiểm tra URL như cũ, nhưng giờ `url` đã chắc chắn là chuỗi
+    if (url && ENPOINTS.some((i) => url.includes(i))) {
+        // Hành động vẫn đang bị tắt để thử nghiệm
+        console.log(`[Injected] Đã bắt được URL: ${url} một cách an toàn.`);
+        response
+          .clone()
+          .json()
+          .then((data) => {
+            window.postMessage({ endpoint: url, data: data }, "*");
+          })
+          .catch((err) => console.error(err));
+    }
+    return response;
 };
